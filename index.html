@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>🎁 ของขวัญล่าสุด</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
+    }
+    ul { list-style: none; padding: 0; }
+    li { margin: 8px 0; font-size: 1.2em; }
+  </style>
+</head>
+<body>
+  <h2>🎁 ของขวัญล่าสุดจาก TikTok</h2>
+  <ul id="gift-list"><li>กำลังโหลด...</li></ul>
+
+  <script>
+    async function fetchGifts() {
+      const res = await fetch("https://webhook-dusky-beta.vercel.app/api/tiktok");
+      const data = await res.json();
+      const list = document.getElementById("gift-list");
+      list.innerHTML = "";
+
+      if (!data.recent || data.recent.length === 0) {
+        list.innerHTML = "<li>ยังไม่มีของขวัญ</li>";
+        return;
+      }
+
+      data.recent.forEach((gift) => {
+        const item = document.createElement("li");
+        item.textContent = `👤 ${gift.username} ส่ง 🎁 ${gift.gift_name} ×${gift.amount}`;
+        list.appendChild(item);
+      });
+    }
+
+    setInterval(fetchGifts, 3000);
+    fetchGifts();
+  </script>
+</body>
+</html>
