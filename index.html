@@ -39,6 +39,33 @@
 
     setInterval(fetchGifts, 3000);
     fetchGifts();
-  </script>
+ <script>
+  async function fetchGifts() {
+    try {
+      const res = await fetch("https://webhook-dusky-beta.vercel.app/api/tiktok");
+      const data = await res.json();
+      const list = document.getElementById("gift-list");
+      list.innerHTML = "";
+
+      if (!data.recent || data.recent.length === 0) {
+        list.innerHTML = "<li>ยังไม่มีของขวัญ</li>";
+        return;
+      }
+
+      data.recent.forEach((gift) => {
+        const item = document.createElement("li");
+        item.textContent = `👤 ${gift.username} ส่ง 🎁 ${gift.gift_name} ×${gift.amount}`;
+        list.appendChild(item);
+      });
+    } catch (err) {
+      // แสดงข้อความถ้ามี error
+      document.getElementById("gift-list").innerHTML = `<li>เกิดข้อผิดพลาด: ${err.message}</li>`;
+    }
+  }
+
+  // โหลดซ้ำทุก 3 วินาที
+  setInterval(fetchGifts, 3000);
+  fetchGifts();
+</script>
 </body>
 </html>
